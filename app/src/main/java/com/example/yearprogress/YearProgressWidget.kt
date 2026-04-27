@@ -2,6 +2,8 @@ package com.example.yearprogress
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,21 +23,26 @@ import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.layout.wrapContentHeight
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import java.time.LocalDate
+import java.time.Year
 import kotlin.math.roundToInt
 
 class YearProgressWidget : GlanceAppWidget() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun provideGlance(
         context: Context,
         id: GlanceId
     ) {
-        val currentDay = 117 // todo: Hacer dinamico
-        val maxDays = 365
+        val currentDay = LocalDate.now().dayOfYear // todo: Hacer dinamico
+        val maxDays = Year.now().length()
         val progress = currentDay / maxDays.toFloat()
         val porcentaje = (progress * 100).roundToInt()
 
@@ -54,6 +61,7 @@ class YearProgressWidget : GlanceAppWidget() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun YearProgressContent(
     trackImage: Bitmap,
@@ -72,11 +80,12 @@ fun YearProgressContent(
             modifier = GlanceModifier
                 .fillMaxWidth()
                 .padding(8.dp)
-                .defaultWeight(),
+                .defaultWeight()
+            ,
             verticalAlignment = Alignment.Top
         ) {
             Text(
-                text = "2026",
+                text = "${Year.now()}",
                 modifier = GlanceModifier.defaultWeight().padding(8.dp),
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -119,7 +128,7 @@ fun YearProgressContent(
                 Text(
                     text = "$porcentaje %",
                     style = TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = DynamicThemeColorProviders.primary
                     )
@@ -130,7 +139,7 @@ fun YearProgressContent(
                 text = "$currentDay/$maxDays",
                 modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(18.dp),
                 style = TextStyle(
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     textAlign = TextAlign.Center,
                     color = DynamicThemeColorProviders.primary
                 )
