@@ -3,7 +3,6 @@ package com.example.yearprogress
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.ColorFilter
@@ -40,14 +39,13 @@ class YearProgressWidget : GlanceAppWidget() {
         val progress = currentDay / maxDays.toFloat()
         val porcentaje = (progress * 100).roundToInt()
 
-        val bitmap = getCircularBitmap(
-            context = context,
-            progress = progress
-        )
+        val trackBitmap = getCircularTrackMaskBitmap()
+        val progressBitmap = getCircularProgressMaskBitmap(progress)
 
         provideContent {
             YearProgressContent(
-                progressImage = bitmap,
+                trackImage = trackBitmap,
+                progressImage = progressBitmap,
                 porcentaje = porcentaje,
                 currentDay = currentDay,
                 maxDays = maxDays
@@ -58,6 +56,7 @@ class YearProgressWidget : GlanceAppWidget() {
 
 @Composable
 fun YearProgressContent(
+    trackImage: Bitmap,
     progressImage: Bitmap,
     porcentaje: Int,
     currentDay: Int,
@@ -106,9 +105,16 @@ fun YearProgressContent(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
+                    provider = ImageProvider(trackImage),
+                    contentDescription = null,
+                    modifier = GlanceModifier.fillMaxSize(),
+                    colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onBackground)
+                )
+                Image(
                     provider = ImageProvider(progressImage),
                     contentDescription = null,
-                    modifier = GlanceModifier.fillMaxSize()
+                    modifier = GlanceModifier.fillMaxSize(),
+                    colorFilter = ColorFilter.tint(DynamicThemeColorProviders.primary)
                 )
                 Text(
                     text = "$porcentaje %",
@@ -133,15 +139,22 @@ fun YearProgressContent(
     }
 }
 
-private fun getCircularBitmap(context: Context, progress: Float): Bitmap {
-    val trackColor = DynamicThemeColorProviders.background.getColor(context).toArgb()
-    val progressColor = DynamicThemeColorProviders.primary.getColor(context).toArgb()
+private fun getCircularTrackMaskBitmap(): Bitmap {
+    return CreateCircularProgressBitmap(
+        sizePx = 220,
+        progress = 1f,
+        trackColor = android.graphics.Color.WHITE,
+        progressColor = android.graphics.Color.TRANSPARENT,
+        strokePx = 18f
+    )
+}
 
+private fun getCircularProgressMaskBitmap(progress: Float): Bitmap {
     return CreateCircularProgressBitmap(
         sizePx = 220,
         progress = progress,
-        trackColor = trackColor,
-        progressColor = progressColor,
+        trackColor = android.graphics.Color.TRANSPARENT,
+        progressColor = android.graphics.Color.WHITE,
         strokePx = 18f
     )
 }
