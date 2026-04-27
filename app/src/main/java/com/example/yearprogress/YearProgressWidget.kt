@@ -2,8 +2,8 @@ package com.example.yearprogress
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.ColorFilter
@@ -15,6 +15,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
+import androidx.glance.color.DynamicThemeColorProviders
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -23,12 +24,10 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
 import kotlin.math.roundToInt
 
 class YearProgressWidget : GlanceAppWidget() {
@@ -36,65 +35,54 @@ class YearProgressWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId
     ) {
-        val palette = GetWidgetPalette(context)
         val currentDay = 117 // todo: Hacer dinamico
         val maxDays = 365
         val progress = currentDay / maxDays.toFloat()
         val porcentaje = (progress * 100).roundToInt()
 
-        val bitmap = CreateCircularProgressBitmap(
-            sizePx = 220,
-            progress = progress,
-            trackColor = palette.primaryInt!!,
-            progressColor = palette.onPrimaryInt!!,
-            strokePx  = 18f
+        val bitmap = getCircularBitmap(
+            context = context,
+            progress = progress
         )
 
-
-
-
         provideContent {
-
             YearProgressContent(
-                bitmap,
-                "$porcentaje",
-                palette
+                progressImage = bitmap,
+                porcentaje = porcentaje,
+                currentDay = currentDay,
+                maxDays = maxDays
             )
-
         }
     }
-
-
-
-
 }
-
 
 @Composable
 fun YearProgressContent(
     progressImage: Bitmap,
-    stringPorncenatje : String,
-    paletteClass: WidgetPaletteClass
+    porcentaje: Int,
+    currentDay: Int,
+    maxDays: Int
 ) {
     Column(
-        modifier = GlanceModifier.fillMaxSize()
-
+        modifier = GlanceModifier
+            .fillMaxSize()
             .cornerRadius(8.dp)
-            .background(paletteClass.background)
-
+            .background(DynamicThemeColorProviders.background)
     ) {
-
         Row(
-            modifier = GlanceModifier.fillMaxWidth().padding(8.dp).defaultWeight(),
-            verticalAlignment = Alignment.Top,
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .defaultWeight(),
+            verticalAlignment = Alignment.Top
         ) {
             Text(
                 text = "2026",
                 modifier = GlanceModifier.defaultWeight().padding(8.dp),
                 style = TextStyle(
                     fontSize = 18.sp,
-                   fontWeight = FontWeight.Bold,
-                    color = paletteClass.primary
+                    fontWeight = FontWeight.Bold,
+                    color = DynamicThemeColorProviders.primary
                 )
             )
 
@@ -104,13 +92,8 @@ fun YearProgressContent(
                 modifier = GlanceModifier
                     .padding(end = 8.dp, top = 4.dp, bottom = 4.dp)
                     .size(36.dp),
-                colorFilter = ColorFilter.tint(paletteClass.primary)
+                colorFilter = ColorFilter.tint(DynamicThemeColorProviders.primary)
             )
-
-
-
-
-
         }
 
         Column(
@@ -118,8 +101,7 @@ fun YearProgressContent(
             horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
             verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
-
-            Box (
+            Box(
                 modifier = GlanceModifier.size(75.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -129,32 +111,37 @@ fun YearProgressContent(
                     modifier = GlanceModifier.fillMaxSize()
                 )
                 Text(
-                    text = "$stringPorncenatje %",
+                    text = "$porcentaje %",
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = paletteClass.primary
+                        color = DynamicThemeColorProviders.primary
                     )
                 )
             }
 
             Text(
-                text = "117/365",
+                text = "$currentDay/$maxDays",
                 modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(18.dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = paletteClass.primary
+                    color = DynamicThemeColorProviders.primary
                 )
             )
-
-
         }
-
-
     }
-
-
-
 }
 
+private fun getCircularBitmap(context: Context, progress: Float): Bitmap {
+    val trackColor = DynamicThemeColorProviders.background.getColor(context).toArgb()
+    val progressColor = DynamicThemeColorProviders.primary.getColor(context).toArgb()
+
+    return CreateCircularProgressBitmap(
+        sizePx = 220,
+        progress = progress,
+        trackColor = trackColor,
+        progressColor = progressColor,
+        strokePx = 18f
+    )
+}

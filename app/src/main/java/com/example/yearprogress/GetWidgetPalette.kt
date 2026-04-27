@@ -4,27 +4,23 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
-import androidx.glance.color.ColorProvider
+import androidx.compose.ui.graphics.toArgb
+import androidx.glance.color.DynamicThemeColorProviders
+import androidx.glance.unit.ColorProvider
 
 fun GetWidgetPalette(context: Context): WidgetPaletteClass {
     val isNight =
         (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val background = ContextCompat.getColor(context, android.R.color.system_neutral1_900)
-        val onBackground = ContextCompat.getColor(context, android.R.color.system_neutral1_50)
-        val primary = ContextCompat.getColor(context, android.R.color.system_accent1_400)
-        val onPrimary = ContextCompat.getColor(context, android.R.color.system_neutral1_900)
-
         WidgetPaletteClass(
-            background = ColorProvider(day = Color(background), night = Color(background)),
-            onBackground = ColorProvider(day = Color(onBackground), night = Color(onBackground)),
-            primary = ColorProvider(day = Color(primary), night = Color(primary)),
-            onPrimary = ColorProvider(day = Color(onPrimary), night = Color(onPrimary)),
-            surfaceVariant = ColorProvider(day = Color(background), night = Color(background)),
-            primaryInt = primary,
-            onPrimaryInt = onPrimary
+            background = DynamicThemeColorProviders.background,
+            onBackground = DynamicThemeColorProviders.onBackground,
+            primary = DynamicThemeColorProviders.primary,
+            onPrimary = DynamicThemeColorProviders.onPrimary,
+            surfaceVariant = DynamicThemeColorProviders.surfaceVariant,
+            primaryInt = DynamicThemeColorProviders.primary.getColor(context).toArgb(),
+            onPrimaryInt = DynamicThemeColorProviders.onPrimary.getColor(context).toArgb()
         )
     } else {
         val background = if (isNight) 0xFF121212.toInt() else 0xFFF5F5F5.toInt()
@@ -34,11 +30,11 @@ fun GetWidgetPalette(context: Context): WidgetPaletteClass {
         val surfaceVariant = if (isNight) 0xFF2A2D2A.toInt() else 0xFFE0E3DD.toInt()
 
         WidgetPaletteClass(
-            background = ColorProvider(day = Color(background), night = Color(background)),
-            onBackground = ColorProvider(day = Color(onBackground), night = Color(onBackground)),
-            primary = ColorProvider(day = Color(primary), night = Color(primary)),
-            onPrimary = ColorProvider(day = Color(onPrimary), night = Color(onPrimary)),
-            surfaceVariant = ColorProvider(day = Color(surfaceVariant), night = Color(surfaceVariant)),
+            background = ColorProvider(Color(background)),
+            onBackground = ColorProvider(Color(onBackground)),
+            primary = ColorProvider(Color(primary)),
+            onPrimary = ColorProvider(Color(onPrimary)),
+            surfaceVariant = ColorProvider(Color(surfaceVariant)),
             primaryInt = primary,
             onPrimaryInt = onPrimary
         )
