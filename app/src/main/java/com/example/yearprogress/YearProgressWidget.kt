@@ -22,6 +22,7 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
@@ -48,11 +49,14 @@ class YearProgressWidget : GlanceAppWidget() {
         )
 
 
+        val palette = GetWidgetPalette(context)
+
         provideContent {
 
             YearProgressContent(
                 bitmap,
-                "$porcentaje"
+                "$porcentaje",
+                palette
             )
 
         }
@@ -67,13 +71,14 @@ class YearProgressWidget : GlanceAppWidget() {
 @Composable
 fun YearProgressContent(
     progressImage: Bitmap,
-    stringPorncenatje : String
+    stringPorncenatje : String,
+    paletteClass: WidgetPaletteClass
 ) {
     Column(
         modifier = GlanceModifier.fillMaxSize()
 
             .cornerRadius(8.dp)
-            //.background(MaterialTheme.colorScheme.background)
+            .background(paletteClass.background)
 
     ) {
 
@@ -87,6 +92,7 @@ fun YearProgressContent(
                 style = TextStyle(
                     fontSize = 18.sp,
                    fontWeight = FontWeight.Bold,
+                    color = paletteClass.primary
                 )
             )
 

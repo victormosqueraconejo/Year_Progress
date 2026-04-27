@@ -52,6 +52,7 @@ dependencies {
     implementation("androidx.glance:glance-appwidget:1.1.1")
     // For interop APIs with Material 3
     implementation("androidx.glance:glance-material3:1.1.1")
+    implementation(libs.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
