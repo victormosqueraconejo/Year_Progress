@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
@@ -35,6 +36,7 @@ class YearProgressWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId
     ) {
+        val palette = GetWidgetPalette(context)
         val currentDay = 117 // todo: Hacer dinamico
         val maxDays = 365
         val progress = currentDay / maxDays.toFloat()
@@ -43,13 +45,13 @@ class YearProgressWidget : GlanceAppWidget() {
         val bitmap = CreateCircularProgressBitmap(
             sizePx = 220,
             progress = progress,
-            trackColor = android.graphics.Color.parseColor("#33FFFFFF"),
-            android.graphics.Color.parseColor("#FFFFFFFF"),
+            trackColor = palette.primaryInt!!,
+            progressColor = palette.onPrimaryInt!!,
             strokePx  = 18f
         )
 
 
-        val palette = GetWidgetPalette(context)
+
 
         provideContent {
 
@@ -101,7 +103,8 @@ fun YearProgressContent(
                 contentDescription = null,
                 modifier = GlanceModifier
                     .padding(end = 8.dp, top = 4.dp, bottom = 4.dp)
-                    .size(36.dp)
+                    .size(36.dp),
+                colorFilter = ColorFilter.tint(paletteClass.primary)
             )
 
 
@@ -130,6 +133,7 @@ fun YearProgressContent(
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
+                        color = paletteClass.primary
                     )
                 )
             }
@@ -139,7 +143,8 @@ fun YearProgressContent(
                 modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(18.dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = paletteClass.primary
                 )
             )
 

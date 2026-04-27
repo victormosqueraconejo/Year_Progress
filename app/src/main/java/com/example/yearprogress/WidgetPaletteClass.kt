@@ -8,5 +8,7 @@ data class WidgetPaletteClass(
     val onBackground: ColorProvider,
     val primary: ColorProvider,
     val onPrimary: ColorProvider,
-    val surfaceVariant: ColorProvider
+    val surfaceVariant: ColorProvider,
+    val primaryInt: Int? = null,
+    val onPrimaryInt: Int?  = null
 )
