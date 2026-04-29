@@ -59,21 +59,21 @@ class YearProgressWidget : GlanceAppWidget() {
 
         provideContent {
 
-            ProgressBarVariant(
-                porcentaje = porcentaje,
-                maxDays = maxDays,
-                currentDay = currentDay
-
-            )
-
-
-//            CircularProgressVariant(
-//                trackImage = trackBitmap,
-//                progressImage = progressBitmap,
+//            ProgressBarVariant(
 //                porcentaje = porcentaje,
-//                currentDay = currentDay,
-//                maxDays = maxDays
+//                maxDays = maxDays,
+//                currentDay = currentDay
+//
 //            )
+
+
+            CircularProgressVariant(
+                trackImage = trackBitmap,
+                progressImage = progressBitmap,
+                porcentaje = porcentaje,
+                currentDay = currentDay,
+                maxDays = maxDays
+            )
         }
     }
 }

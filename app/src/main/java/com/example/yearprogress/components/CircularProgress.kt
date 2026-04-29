@@ -10,6 +10,7 @@ import androidx.glance.ColorFilter
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalSize
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.color.DynamicThemeColorProviders
@@ -17,6 +18,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
@@ -40,18 +42,19 @@ fun CircularProgressVariant(
     currentDay: Int,
     maxDays: Int
 ) {
+    val size = LocalSize.current
+    val isCompact = size.height < 120.dp
+
+
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
             .cornerRadius(8.dp)
-            .background(DynamicThemeColorProviders.background)
+            .background(DynamicThemeColorProviders.primary)
     ) {
         Row(
             modifier = GlanceModifier
                 .fillMaxWidth()
-                .padding(8.dp)
-                .padding(bottom = 4.dp)
-                .defaultWeight()
             ,
             verticalAlignment = Alignment.Top
         ) {
@@ -61,7 +64,7 @@ fun CircularProgressVariant(
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = DynamicThemeColorProviders.primary
+                    color = DynamicThemeColorProviders.onPrimary
                 )
             )
 
@@ -71,51 +74,57 @@ fun CircularProgressVariant(
                 modifier = GlanceModifier
                     .padding(end = 8.dp, top = 4.dp, bottom = 4.dp)
                     .size(36.dp),
-                colorFilter = ColorFilter.tint(DynamicThemeColorProviders.primary)
+                colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onPrimary)
             )
         }
 
-        Column(
-            modifier = GlanceModifier.fillMaxWidth().padding(12.dp),
-            horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
-            verticalAlignment = Alignment.Vertical.CenterVertically
-        ) {
-            Box(
-                modifier = GlanceModifier.size(60.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    provider = ImageProvider(trackImage),
-                    contentDescription = null,
-                    modifier = GlanceModifier.fillMaxSize(),
-                    colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onBackground)
-                )
-                Image(
-                    provider = ImageProvider(progressImage),
-                    contentDescription = null,
-                    modifier = GlanceModifier.fillMaxSize(),
-                    colorFilter = ColorFilter.tint(DynamicThemeColorProviders.primary)
-                )
-                Text(
-                    text = "${Utils.formatPorcentaje(porcentaje)} %",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = DynamicThemeColorProviders.primary
-                    )
-                )
+
+            if (!isCompact) {
+
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+                    verticalAlignment = Alignment.Vertical.CenterVertically
+                ) {
+                    Box(
+                        modifier = GlanceModifier.size(100.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            provider = ImageProvider(trackImage),
+                            contentDescription = null,
+                            modifier = GlanceModifier.fillMaxSize(),
+                            colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onBackground)
+                        )
+                        Image(
+                            provider = ImageProvider(progressImage),
+                            contentDescription = null,
+                            modifier = GlanceModifier.fillMaxSize(),
+                            colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onPrimary)
+                        )
+                        Text(
+                            text = "${Utils.formatPorcentaje(porcentaje)}%",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = DynamicThemeColorProviders.onPrimary
+                            )
+                        )
+                    }
+
             }
 
-            Text(
-                text = "$currentDay/$maxDays",
-                modifier = GlanceModifier.fillMaxWidth().defaultWeight().padding(18.dp),
-                style = TextStyle(
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                    color = DynamicThemeColorProviders.primary
-                )
-            )
+
         }
+        Text(
+            text = "$currentDay/$maxDays",
+            modifier = GlanceModifier.fillMaxWidth().padding(top = 8.dp),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = DynamicThemeColorProviders.onPrimary
+            )
+        )
     }
 }
 
