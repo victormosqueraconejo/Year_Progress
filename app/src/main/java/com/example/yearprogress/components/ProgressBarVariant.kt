@@ -2,6 +2,7 @@ package com.example.yearprogress.components
 
 
 import android.os.Build
+import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -11,12 +12,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalSize
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.color.DynamicThemeColorProviders
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
@@ -47,8 +51,10 @@ fun ProgressBarVariant(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(DynamicThemeColorProviders.primary)
-            .padding(16.dp)
+            .padding(8.dp)
+            .cornerRadius(16.dp)
     ) {
+        Spacer(modifier = GlanceModifier.defaultWeight())
         Row(
             modifier = GlanceModifier.fillMaxWidth(),
             verticalAlignment = Alignment.Vertical.CenterVertically,
@@ -58,7 +64,7 @@ fun ProgressBarVariant(
                 text = "TODAY'S PERSPECTIVE",
                 style = TextStyle(
                     fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                     color = DynamicThemeColorProviders.onPrimary
                 ),
                 modifier = GlanceModifier.defaultWeight()
@@ -66,11 +72,12 @@ fun ProgressBarVariant(
 
             Box(
                 modifier = GlanceModifier
-                    .background(DynamicThemeColorProviders.onPrimary)
+                    .background(DynamicThemeColorProviders.onPrimary).cornerRadius(8.dp)
                     .padding(horizontal = 10.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = "${today.year}",
+                    modifier = GlanceModifier.cornerRadius(16.dp),
                     style = TextStyle(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
@@ -79,6 +86,9 @@ fun ProgressBarVariant(
                 )
             }
         }
+
+        Spacer(modifier = GlanceModifier.defaultWeight())
+
 
         Row(
             modifier = GlanceModifier.fillMaxWidth().padding(top = 6.dp),
@@ -95,10 +105,12 @@ fun ProgressBarVariant(
             )
         }
 
+//        Spacer(modifier = GlanceModifier.defaultWeight())
+
         Row(
             modifier = GlanceModifier
                 .fillMaxWidth()
-                .padding(top = 6.dp),
+                .padding(top = 6.dp, bottom = 6.dp),
             verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
             Text(
@@ -115,13 +127,15 @@ fun ProgressBarVariant(
                 text = "$currentDay / $maxDays",
                 style = TextStyle(
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                     color = DynamicThemeColorProviders.onPrimary
                 )
             )
         }
 
-        ProgressBar(progress = safeProgress, modifier = GlanceModifier.padding(top = 6.dp))
+        ProgressBar(progress = safeProgress, modifier = GlanceModifier)
+
+
 
         Row(
             modifier = GlanceModifier
@@ -130,12 +144,13 @@ fun ProgressBarVariant(
             verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
             Text(
-                text = "${porcentaje.coerceIn(0, 100)}% Complete",
+                text = "${porcentaje.coerceIn(0, 100)}%",
                 style = TextStyle(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
                     color = DynamicThemeColorProviders.onPrimary
-                )
+                ),
+                modifier = GlanceModifier.defaultWeight()
             )
 
             Text(
@@ -143,36 +158,51 @@ fun ProgressBarVariant(
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
-                    color = DynamicThemeColorProviders.onPrimary
+                    color = DynamicThemeColorProviders.onPrimary,
+                    textAlign = androidx.glance.text.TextAlign.End
                 ),
                 modifier = GlanceModifier.defaultWeight()
             )
         }
-    }
-}
 
+        Spacer(modifier = GlanceModifier.defaultWeight())
+    }
+
+
+
+}
 @Composable
 fun ProgressBar(
     progress: Float,
     modifier: GlanceModifier = GlanceModifier
 ) {
     val safeProgress = progress.coerceIn(0f, 1f)
-    val barHeight = 10.dp
-    val barWidth = 200.dp
-    val filledWidth = barWidth * safeProgress
+
+
+    val totalWidth = LocalSize.current.width
+    val filledWidth = totalWidth * safeProgress
+
+    val barHeight = 16.dp
+    val roundedCorner = barHeight / 2
 
     Box(
+        contentAlignment = Alignment.CenterStart,
         modifier = modifier
-            .width(barWidth)
+            .fillMaxWidth()
             .height(barHeight)
+            .cornerRadius(roundedCorner)
             .background(DynamicThemeColorProviders.onPrimary)
     ) {
-        Box(
-            modifier = GlanceModifier
-                .width(filledWidth)
-                .fillMaxHeight()
-                .background(DynamicThemeColorProviders.primary),
-            content = {}
-        )
+        if (safeProgress > 0f) {
+            Box(
+                modifier = GlanceModifier
+                    .width(filledWidth)
+                    .fillMaxHeight()
+                    .cornerRadius(roundedCorner)
+                    .background(DynamicThemeColorProviders.onBackground),
+                content = {},
+
+            )
+        }
     }
 }

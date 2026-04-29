@@ -13,6 +13,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -40,6 +41,9 @@ import java.time.Year
 import kotlin.math.roundToInt
 
 class YearProgressWidget : GlanceAppWidget() {
+
+    override val sizeMode: SizeMode = SizeMode.Exact
+
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun provideGlance(
         context: Context,
