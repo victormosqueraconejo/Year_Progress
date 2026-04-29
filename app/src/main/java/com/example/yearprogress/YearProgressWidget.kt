@@ -52,7 +52,7 @@ class YearProgressWidget : GlanceAppWidget() {
         val currentDay = LocalDate.now().dayOfYear
         val maxDays = Year.now().length()
         val progress = currentDay / maxDays.toFloat()
-        val porcentaje = (progress * 100).roundToInt()
+        val porcentaje = (progress * 100)
 
         val trackBitmap = getCircularTrackMaskBitmap()
         val progressBitmap = getCircularProgressMaskBitmap(progress)

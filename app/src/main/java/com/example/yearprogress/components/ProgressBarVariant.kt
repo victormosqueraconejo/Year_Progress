@@ -30,6 +30,7 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.example.yearprogress.utils.Utils.formatPorcentaje
 import java.time.LocalDate
 import java.time.format.TextStyle as JavaTextStyle
 import java.util.Locale
@@ -37,7 +38,7 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProgressBarVariant(
-    porcentaje: Int,
+    porcentaje: Float,
     currentDay: Int,
     maxDays: Int
 ) {
@@ -144,7 +145,9 @@ fun ProgressBarVariant(
             verticalAlignment = Alignment.Vertical.CenterVertically
         ) {
             Text(
-                text = "${porcentaje.coerceIn(0, 100)}%",
+                text = "${formatPorcentaje(
+                    porcentaje
+                )} %" ,
                 style = TextStyle(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,

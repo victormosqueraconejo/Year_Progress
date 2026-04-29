@@ -26,6 +26,10 @@ object Utils {
         )
     }
 
+    fun formatPorcentaje(number : Float) : String {
+        return String.format("%.2f", number)
+    }
+
 
 
 }

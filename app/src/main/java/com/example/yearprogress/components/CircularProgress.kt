@@ -27,6 +27,7 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.example.yearprogress.CreateCircularProgressBitmap
 import com.example.yearprogress.R
+import com.example.yearprogress.utils.Utils
 import java.time.Year
 
 
@@ -35,7 +36,7 @@ import java.time.Year
 fun CircularProgressVariant(
     trackImage: Bitmap,
     progressImage: Bitmap,
-    porcentaje: Int,
+    porcentaje: Float,
     currentDay: Int,
     maxDays: Int
 ) {
@@ -96,7 +97,7 @@ fun CircularProgressVariant(
                     colorFilter = ColorFilter.tint(DynamicThemeColorProviders.primary)
                 )
                 Text(
-                    text = "$porcentaje %",
+                    text = "${Utils.formatPorcentaje(porcentaje)} %",
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
