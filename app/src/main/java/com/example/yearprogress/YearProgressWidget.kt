@@ -7,6 +7,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -34,13 +36,18 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.example.yearprogress.components.CircularProgressVariant
 import com.example.yearprogress.components.ProgressBarVariant
+import com.example.yearprogress.utils.Utils.dataStore
 import com.example.yearprogress.utils.Utils.getCircularProgressMaskBitmap
 import com.example.yearprogress.utils.Utils.getCircularTrackMaskBitmap
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.Year
 import kotlin.math.roundToInt
 
+
+
 class YearProgressWidget : GlanceAppWidget() {
+
 
     override val sizeMode: SizeMode = SizeMode.Exact
 
@@ -56,24 +63,34 @@ class YearProgressWidget : GlanceAppWidget() {
 
         val trackBitmap = getCircularTrackMaskBitmap()
         val progressBitmap = getCircularProgressMaskBitmap(progress)
+        val KEY = intPreferencesKey("widget_variant")
+
+
+        val preferences = context.dataStore.data.first()
+        val selectVariant = preferences[KEY] ?: 1
 
         provideContent {
 
-//            ProgressBarVariant(
-//                porcentaje = porcentaje,
-//                maxDays = maxDays,
-//                currentDay = currentDay
-//
-//            )
+            if ( selectVariant == 1) {
+                CircularProgressVariant(
+                    trackImage = trackBitmap,
+                    progressImage = progressBitmap,
+                    porcentaje = porcentaje,
+                    currentDay = currentDay,
+                    maxDays = maxDays
+                )
+
+            }
+            else {
 
 
-            CircularProgressVariant(
-                trackImage = trackBitmap,
-                progressImage = progressBitmap,
-                porcentaje = porcentaje,
-                currentDay = currentDay,
-                maxDays = maxDays
-            )
+                ProgressBarVariant(
+                    porcentaje = porcentaje,
+                    maxDays = maxDays,
+                    currentDay = currentDay
+
+                )
+            }
         }
     }
 }

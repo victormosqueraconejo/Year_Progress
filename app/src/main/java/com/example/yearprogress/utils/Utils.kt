@@ -1,9 +1,14 @@
 package com.example.yearprogress.utils
 
+import android.content.Context
 import android.graphics.Bitmap
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.yearprogress.CreateCircularProgressBitmap
 
 object Utils {
+
+
+    val Context.dataStore by preferencesDataStore(name = "setting")
 
 
     fun getCircularTrackMaskBitmap(): Bitmap {
