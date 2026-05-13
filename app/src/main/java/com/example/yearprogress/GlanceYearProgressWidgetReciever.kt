@@ -11,11 +11,11 @@ class GlanceYearProgressWidgetReciever : GlanceAppWidgetReceiver() {
 
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        WidgetUpdateDate(context)
+        WidgetUpdateScheduler.scheduleMidnightUpdate(context)
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        WidgetUpdateDate(context)
+        WidgetUpdateScheduler.scheduleMidnightUpdate(context)
     }
 }

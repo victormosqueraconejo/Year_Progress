@@ -26,6 +26,10 @@ class DateChangeReciever : BroadcastReceiver() {
                 ids.forEach { id ->
                     widget.update(context, id)
                 }
+
+                // Asegurar que la alarma queda lista para mañana
+                WidgetUpdateScheduler.scheduleMidnightUpdate(context)
+
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
