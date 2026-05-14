@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.ViewModel
 import com.example.yearprogress.repository.WidgetSelecionRepository
@@ -44,6 +46,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.Year
+import com.example.yearprogress.components.NativeProgressBar
+import com.example.yearprogress.components.NativeCircularProgress
 
 
 class MainActivity : ComponentActivity() {
@@ -72,23 +78,26 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding.calculateTopPadding())
                   ) {
 
+                      val currentDay = LocalDate.now().dayOfYear
+                      val maxDays = Year.now().length()
+                      val progress = currentDay / maxDays.toFloat()
 
                       CardSelectVariant(
-                          R.drawable.variante_1,
-                          "Variante 1",
-                          Modifier.weight(1f),
+                          previewBlock = { NativeProgressBar(progress, currentDay, maxDays) },
+                          text = "Barra (Variante 1)",
+                          modifier = Modifier.weight(1f),
                           enable = true,
                           onClick = { if (selectedId != 1) selectedId = 1
 
                                     },
-                          this@MainActivity,
+                          context = this@MainActivity,
                           variant = 1
                       )
 
                       CardSelectVariant(
-                          R.drawable.desing,
-                          "Variante 2",
-                          Modifier.weight(1f),
+                          previewBlock = { NativeCircularProgress(progress, currentDay, maxDays) },
+                          text = "Círculo (Variante 2)",
+                          modifier = Modifier.weight(1f),
                           enable = true,
                           onClick = {
                               if (selectedId != 2) {
@@ -96,7 +105,7 @@ class MainActivity : ComponentActivity() {
 
                               }
                           },
-                          this@MainActivity,
+                          context = this@MainActivity,
                           variant = 2
                       )
 
@@ -115,7 +124,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CardSelectVariant(
-    image : Int,
+    previewBlock: @Composable () -> Unit,
     text : String,
     modifier: Modifier,
     enable : Boolean,
@@ -136,7 +145,7 @@ fun CardSelectVariant(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .heightIn(min = 150.dp, max = 200.dp),
+            .wrapContentHeight(),
         onClick = {
             onClick()
             Toast.makeText(context, "$text", Toast.LENGTH_SHORT).show()
@@ -154,22 +163,22 @@ fun CardSelectVariant(
     ) {
 
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceAround
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(image),
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Inside
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                previewBlock()
+            }
+
+            Text(
+                text = text,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                textAlign = TextAlign.Center
             )
-
-                Text(
-                    text = text,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-
-                )
 
 
 
