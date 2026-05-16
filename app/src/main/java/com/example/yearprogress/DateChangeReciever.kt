@@ -18,14 +18,7 @@ class DateChangeReciever : BroadcastReceiver() {
 
         CoroutineScope(Dispatchers.Default).launch {
             try {
-                val manager = GlanceAppWidgetManager(context)
-                val widget = YearProgressWidget()
-
-                val ids = manager.getGlanceIds(YearProgressWidget::class.java)
-
-                ids.forEach { id ->
-                    widget.update(context, id)
-                }
+                YearProgressWidget().updateAll(context)
 
                 // Asegurar que la alarma queda lista para mañana
                 WidgetUpdateScheduler.scheduleMidnightUpdate(context)

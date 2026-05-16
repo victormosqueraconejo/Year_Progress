@@ -11,10 +11,8 @@ class WidgetSelectionViewModel(
 
     val selectionVariant = repo.selectedVariantFlow
 
-    fun selectVariant( id : Int) {
-        viewModelScope.launch {
-            repo.setSelectedVariant(id)
-        }
+    suspend fun selectVariant( id : Int) {
+        repo.setSelectedVariant(id)
     }
 
 
