@@ -3,6 +3,7 @@ package com.example.yearprogress.components
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +31,7 @@ import androidx.glance.text.TextStyle
 import com.example.yearprogress.CreateCircularProgressBitmap
 import com.example.yearprogress.R
 import com.example.yearprogress.utils.Utils
+import java.time.LocalDate
 import java.time.Year
 
 
@@ -44,6 +46,8 @@ fun CircularProgressVariant(
 ) {
     val size = LocalSize.current
     val isCompact = size.height < 120.dp
+    val today = LocalDate.now()
+    val dateLabel = "${today.dayOfMonth} ${today.month}"
 
 
     Column(
@@ -118,6 +122,18 @@ fun CircularProgressVariant(
         }
         Text(
             text = "$currentDay/$maxDays",
+            modifier = GlanceModifier.fillMaxWidth().padding(top = 8.dp),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = DynamicThemeColorProviders.onPrimary
+            )
+        )
+
+
+
+        Text(
+            text = dateLabel,
             modifier = GlanceModifier.fillMaxWidth().padding(top = 8.dp),
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
