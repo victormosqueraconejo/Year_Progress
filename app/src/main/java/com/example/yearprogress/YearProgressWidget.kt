@@ -1,39 +1,17 @@
 package com.example.yearprogress
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
-import androidx.glance.GlanceModifier
-import androidx.glance.Image
-import androidx.glance.ImageProvider
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
-import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
-import androidx.glance.background
-import androidx.glance.color.DynamicThemeColorProviders
-import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
-import androidx.glance.layout.Column
-import androidx.glance.layout.Row
-import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
-import androidx.glance.layout.height
-import androidx.glance.layout.padding
-import androidx.glance.layout.size
-import androidx.glance.layout.wrapContentHeight
-import androidx.glance.text.FontWeight
-import androidx.glance.text.Text
-import androidx.glance.text.TextAlign
-import androidx.glance.text.TextStyle
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.glance.material3.ColorProviders
+import androidx.glance.GlanceTheme
+import com.example.yearprogress.ui.theme.DarkColorScheme
 import com.example.yearprogress.components.CircularProgressVariant
 import com.example.yearprogress.components.ProgressBarVariant
 import com.example.yearprogress.utils.Utils.dataStore
@@ -42,7 +20,6 @@ import com.example.yearprogress.utils.Utils.getCircularTrackMaskBitmap
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.Year
-import kotlin.math.roundToInt
 
 
 
@@ -69,27 +46,35 @@ class YearProgressWidget : GlanceAppWidget() {
         val preferences = context.dataStore.data.first()
         val selectVariant = preferences[KEY] ?: 1
 
+        val darkScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicDarkColorScheme(context)
+        } else {
+            DarkColorScheme
+        }
+
+        val glanceColorProviders = ColorProviders(
+            light = darkScheme,
+            dark = darkScheme
+        )
+
         provideContent {
-
-            if ( selectVariant == 1) {
-                CircularProgressVariant(
-                    trackImage = trackBitmap,
-                    progressImage = progressBitmap,
-                    porcentaje = porcentaje,
-                    currentDay = currentDay,
-                    maxDays = maxDays
-                )
-
-            }
-            else {
-
-
-                ProgressBarVariant(
-                    porcentaje = porcentaje,
-                    maxDays = maxDays,
-                    currentDay = currentDay
-
-                )
+            GlanceTheme(colors = glanceColorProviders) {
+                if ( selectVariant == 1) {
+                    ProgressBarVariant(
+                        porcentaje = porcentaje,
+                        maxDays = maxDays,
+                        currentDay = currentDay
+                    )
+                }
+                else {
+                    CircularProgressVariant(
+                        trackImage = trackBitmap,
+                        progressImage = progressBitmap,
+                        porcentaje = porcentaje,
+                        currentDay = currentDay,
+                        maxDays = maxDays
+                    )
+                }
             }
         }
     }

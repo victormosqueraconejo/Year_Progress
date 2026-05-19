@@ -1,8 +1,6 @@
 package com.example.yearprogress
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -37,8 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.glance.appwidget.updateAll
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.yearprogress.repository.WidgetSelecionRepository
 import com.example.yearprogress.ui.theme.YearProgressTheme
 import com.example.yearprogress.viewmodel.WidgetSelectionViewModel
@@ -54,66 +54,58 @@ import com.example.yearprogress.components.NativeCircularProgress
 
 class MainActivity : ComponentActivity() {
 
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             YearProgressTheme {
-
-
-
-
-
-                var selectedId by remember { mutableStateOf(1) }
-
+                val viewModel: WidgetSelectionViewModel = viewModel(
+                    factory = WidgetSelectionViewModel.Factory(
+                        WidgetSelecionRepository(applicationContext)
+                    )
+                )
+                val coroutineScope = rememberCoroutineScope()
 
                 Scaffold(modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)) { innerPadding ->
 
-                  Row(
+                    Row(
                         modifier = Modifier.padding(innerPadding.calculateTopPadding())
-                  ) {
+                    ) {
 
-                      val currentDay = LocalDate.now().dayOfYear
-                      val maxDays = Year.now().length()
-                      val progress = currentDay / maxDays.toFloat()
+                        val currentDay = LocalDate.now().dayOfYear
+                        val maxDays = Year.now().length()
+                        val progress = currentDay / maxDays.toFloat()
+                        
+                        val selectedVariant by viewModel.selectionVariant.collectAsState(initial = 1)
 
-                      CardSelectVariant(
-                          previewBlock = { NativeProgressBar(progress, currentDay, maxDays) },
-                          text = "Barra (Variante 1)",
-                          modifier = Modifier.weight(1f),
-                          enable = true,
-                          onClick = { if (selectedId != 1) selectedId = 1
+                        CardSelectVariant(
+                            previewBlock = { NativeProgressBar(progress, currentDay, maxDays) },
+                            text = "Barra (Variante 1)",
+                            isSelected = selectedVariant == 1,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                coroutineScope.launch {
+                                    viewModel.selectVariant(1)
+                                    YearProgressWidget().updateAll(applicationContext)
+                                }
+                            }
+                        )
 
-                                    },
-                          context = this@MainActivity,
-                          variant = 1
-                      )
-
-                      CardSelectVariant(
-                          previewBlock = { NativeCircularProgress(progress, currentDay, maxDays) },
-                          text = "Círculo (Variante 2)",
-                          modifier = Modifier.weight(1f),
-                          enable = true,
-                          onClick = {
-                              if (selectedId != 2) {
-                                  selectedId = 2
-
-                              }
-                          },
-                          context = this@MainActivity,
-                          variant = 2
-                      )
-
-
-
-                  }
-
-
+                        CardSelectVariant(
+                            previewBlock = { NativeCircularProgress(progress, currentDay, maxDays) },
+                            text = "Círculo (Variante 2)",
+                            isSelected = selectedVariant == 2,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                coroutineScope.launch {
+                                    viewModel.selectVariant(2)
+                                    YearProgressWidget().updateAll(applicationContext)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -126,49 +118,38 @@ class MainActivity : ComponentActivity() {
 fun CardSelectVariant(
     previewBlock: @Composable () -> Unit,
     text : String,
+    isSelected: Boolean,
     modifier: Modifier,
-    enable : Boolean,
     onClick : () -> Unit,
-    context: Context,
-    variant : Int
 ) {
-
-    val repo = WidgetSelecionRepository(context)
-    val viewModelWidgetVariant = WidgetSelectionViewModel(repo)
-
     ElevatedCard(
-        enabled = enable,
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 16.dp
+            defaultElevation = if (isSelected) 8.dp else 2.dp
         ),
-
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+        ),
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .wrapContentHeight(),
         onClick = {
-            onClick()
-            Toast.makeText(context, "$text", Toast.LENGTH_SHORT).show()
-
-
-            CoroutineScope(Dispatchers.Default).launch {
-                viewModelWidgetVariant.selectVariant(variant)
-                YearProgressWidget().updateAll(context)
-
+            if (!isSelected) {
+                onClick()
             }
-
-
         }
-
     ) {
-
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 previewBlock()
@@ -176,16 +157,12 @@ fun CardSelectVariant(
 
             Text(
                 text = text,
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
                 textAlign = TextAlign.Center
             )
-
-
-
         }
-
-
     }
-
 
 }

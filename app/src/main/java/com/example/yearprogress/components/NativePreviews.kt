@@ -37,8 +37,16 @@ fun NativeProgressBar(progress: Float, currentDay: Int, maxDays: Int, modifier: 
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("TODAY'S PERSPECTIVE", style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp), color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.weight(1f))
-            Box(modifier = Modifier.background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
-                Text("${today.year}", style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp, fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.primary)
+            Column(horizontalAlignment = Alignment.End) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_refresh),
+                    contentDescription = "Refresh",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(12.dp).padding(bottom = 2.dp, end = 2.dp)
+                )
+                Box(modifier = Modifier.background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(8.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                    Text("${today.year}", style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp, fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.primary)
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -74,18 +82,19 @@ fun NativeCircularProgress(progress: Float, currentDay: Int, maxDays: Int, modif
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
             Text("${Year.now()}", style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.weight(1f))
+            Icon(painter = painterResource(R.drawable.ic_refresh), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(16.dp).padding(end = 4.dp))
             Icon(painter = painterResource(R.drawable.ic_finance_mode), contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(16.dp))
         }
         Spacer(modifier = Modifier.height(12.dp))
         Box(contentAlignment = Alignment.Center, modifier = Modifier.size(70.dp)) {
             CircularProgressIndicator(
-                progress = 1f,
+                progress = { 1f },
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
                 strokeWidth = 6.dp,
                 modifier = Modifier.fillMaxSize()
             )
             CircularProgressIndicator(
-                progress = progress.coerceIn(0f, 1f),
+                progress = { progress.coerceIn(0f, 1f) },
                 color = MaterialTheme.colorScheme.onPrimary,
                 strokeWidth = 6.dp,
                 modifier = Modifier.fillMaxSize(),

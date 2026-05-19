@@ -1,4 +1,5 @@
 package com.example.yearprogress.components
+import androidx.glance.GlanceTheme
 
 import android.graphics.Bitmap
 import android.os.Build
@@ -14,7 +15,7 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
-import androidx.glance.color.DynamicThemeColorProviders
+
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -28,6 +29,9 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
+import com.example.yearprogress.WidgetUpdateAction
+import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.action.clickable
 import com.example.yearprogress.CreateCircularProgressBitmap
 import com.example.yearprogress.R
 import com.example.yearprogress.utils.Utils
@@ -54,7 +58,7 @@ fun CircularProgressVariant(
         modifier = GlanceModifier
             .fillMaxSize()
             .cornerRadius(8.dp)
-            .background(DynamicThemeColorProviders.primary)
+            .background(GlanceTheme.colors.primary)
     ) {
         Row(
             modifier = GlanceModifier
@@ -68,18 +72,20 @@ fun CircularProgressVariant(
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = DynamicThemeColorProviders.onPrimary
+                    color = GlanceTheme.colors.onPrimary
                 )
             )
 
             Image(
-                provider = ImageProvider(R.drawable.ic_finance_mode),
-                contentDescription = null,
+                provider = ImageProvider(R.drawable.ic_refresh),
+                contentDescription = "Refresh",
                 modifier = GlanceModifier
                     .padding(end = 8.dp, top = 4.dp, bottom = 4.dp)
-                    .size(36.dp),
-                colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onPrimary)
+                    .size(24.dp)
+                    .clickable(onClick = actionRunCallback<WidgetUpdateAction>()),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimary)
             )
+
         }
 
 
@@ -98,20 +104,20 @@ fun CircularProgressVariant(
                             provider = ImageProvider(trackImage),
                             contentDescription = null,
                             modifier = GlanceModifier.fillMaxSize(),
-                            colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onBackground)
+                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onBackground)
                         )
                         Image(
                             provider = ImageProvider(progressImage),
                             contentDescription = null,
                             modifier = GlanceModifier.fillMaxSize(),
-                            colorFilter = ColorFilter.tint(DynamicThemeColorProviders.onPrimary)
+                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimary)
                         )
                         Text(
                             text = "${Utils.formatPorcentaje(porcentaje)}%",
                             style = TextStyle(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = DynamicThemeColorProviders.onPrimary
+                                color = GlanceTheme.colors.onPrimary
                             )
                         )
                     }
@@ -126,7 +132,7 @@ fun CircularProgressVariant(
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = DynamicThemeColorProviders.onPrimary
+                color = GlanceTheme.colors.onPrimary
             )
         )
 
@@ -138,9 +144,9 @@ fun CircularProgressVariant(
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = DynamicThemeColorProviders.onPrimary
+                fontSize = 16.sp,
+                color = GlanceTheme.colors.onPrimary
             )
         )
     }
 }
-
